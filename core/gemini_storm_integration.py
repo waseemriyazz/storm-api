@@ -1,11 +1,9 @@
-# core/gemini_storm_integration.py
-import os
+
 import logging
 
+from api.models import ArticleData
 from storm.knowledge_storm import STORMWikiRunnerArguments, STORMWikiLMConfigs
-from storm.knowledge_storm.lm import GoogleModel  # Import GoogleModel
-
-# Import SerperRM and remove DuckDuckGoSearchRM
+from storm.knowledge_storm.lm import GoogleModel  
 from storm.knowledge_storm.rm import SerperRM
 from storm.knowledge_storm.storm_wiki.engine import STORMWikiRunner
 from storm.knowledge_storm.storm_wiki.modules.callback import BaseCallbackHandler
@@ -13,8 +11,8 @@ from storm.knowledge_storm.storm_wiki.modules.callback import BaseCallbackHandle
 logger = logging.getLogger(__name__)
 
 
-# Modify run_storm to accept both API keys as arguments
-def run_storm(topic: str, google_api_key: str, serper_api_key: str) -> str:
+
+def run_storm(topic: str, google_api_key: str, serper_api_key: str) -> ArticleData:
     """
     Execute the STORM pipeline using Gemini and Serper for the given topic.
     Requires Google and Serper API keys to be passed explicitly.
@@ -26,7 +24,6 @@ def run_storm(topic: str, google_api_key: str, serper_api_key: str) -> str:
 
     logger.info(f"Running STORM with Gemini and Serper for topic: {topic}")
 
-    # Reduce max_thread_num to 1 to mitigate Gemini free tier rate limits
     args = STORMWikiRunnerArguments(
         output_dir=".",
         max_conv_turn=1,
@@ -39,10 +36,9 @@ def run_storm(topic: str, google_api_key: str, serper_api_key: str) -> str:
     )
     lm_configs = STORMWikiLMConfigs()
 
-    # Configure language models using the provided Google Gemini API key
+
     gemini_kwargs = {"api_key": google_api_key}
 
-    # Use flash for lighter tasks
     conv_simulator_lm = GoogleModel(
         model="models/gemini-1.5-flash-002", max_tokens=500, **gemini_kwargs
     )
@@ -50,7 +46,6 @@ def run_storm(topic: str, google_api_key: str, serper_api_key: str) -> str:
         model="models/gemini-1.5-flash-002", max_tokens=500, **gemini_kwargs
     )
 
-    # Use pro for heavier tasks (adjust model names if needed, e.g., gemini-1.5-pro-latest)
     outline_gen_lm = GoogleModel(
         model="models/gemini-2.0-flash-exp", max_tokens=400, **gemini_kwargs
     )
@@ -67,7 +62,6 @@ def run_storm(topic: str, google_api_key: str, serper_api_key: str) -> str:
     lm_configs.set_article_gen_lm(article_gen_lm)
     lm_configs.set_article_polish_lm(article_polish_lm)
 
-    # Use SerperRM with the provided key
     retriever = SerperRM(serper_search_api_key=serper_api_key)
 
     runner = STORMWikiRunner(args, lm_configs, retriever)
@@ -107,4 +101,4 @@ def run_storm(topic: str, google_api_key: str, serper_api_key: str) -> str:
     )
     logger.debug("Polished the article.")
 
-    return final_article.to_string()
+    return ArticleData(article=final_article.to_string())
