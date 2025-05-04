@@ -5,10 +5,12 @@ def chunk_string(s: str, chunk_size: int = 1024):
     for i in range(0, len(s), chunk_size):
         yield s[i : i + chunk_size]
 
+
 def iter_json(json_str: str):
-        
-        for chunk in chunk_string(json_str, 1024):
-            yield chunk
+
+    for chunk in chunk_string(json_str, 1024):
+        yield chunk
+
 
 import json
 from typing import Iterator, Any

@@ -19,17 +19,23 @@ class Settings(BaseSettings):
         super().__init__(**kwargs)
         env_file_path = self.model_config.get("env_file")
         if not env_file_path:
-            logger.warning(".env file not found. Relying on system environment variables.")
+            logger.warning(
+                ".env file not found. Relying on system environment variables."
+            )
         else:
             logger.info(f"Loaded settings from: {env_file_path}")
 
         if not self.google_api_key:
-            logger.error("CRITICAL: GOOGLE_API_KEY not found in settings after loading.")
+            logger.error(
+                "CRITICAL: GOOGLE_API_KEY not found in settings after loading."
+            )
         else:
             logger.info("GOOGLE_API_KEY found in settings.")
 
         if not self.serper_api_key:
-            logger.error("CRITICAL: SERPER_API_KEY not found in settings after loading.")
+            logger.error(
+                "CRITICAL: SERPER_API_KEY not found in settings after loading."
+            )
         else:
             logger.info("SERPER_API_KEY found in settings.")
 

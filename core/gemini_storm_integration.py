@@ -1,15 +1,13 @@
-
 import logging
 
 from api.models import ArticleData
 from storm.knowledge_storm import STORMWikiRunnerArguments, STORMWikiLMConfigs
-from storm.knowledge_storm.lm import GoogleModel  
+from storm.knowledge_storm.lm import GoogleModel
 from storm.knowledge_storm.rm import SerperRM
 from storm.knowledge_storm.storm_wiki.engine import STORMWikiRunner
 from storm.knowledge_storm.storm_wiki.modules.callback import BaseCallbackHandler
 
 logger = logging.getLogger(__name__)
-
 
 
 def run_storm(topic: str, google_api_key: str, serper_api_key: str) -> ArticleData:
@@ -36,7 +34,6 @@ def run_storm(topic: str, google_api_key: str, serper_api_key: str) -> ArticleDa
     )
     lm_configs = STORMWikiLMConfigs()
 
-
     gemini_kwargs = {"api_key": google_api_key}
 
     conv_simulator_lm = GoogleModel(
@@ -50,10 +47,14 @@ def run_storm(topic: str, google_api_key: str, serper_api_key: str) -> ArticleDa
         model="models/gemini-2.0-flash-exp", max_tokens=400, **gemini_kwargs
     )
     article_gen_lm = GoogleModel(
-        model="models/gemini-2.0-flash-lite-preview-02-05", max_tokens=700, **gemini_kwargs
+        model="models/gemini-2.0-flash-lite-preview-02-05",
+        max_tokens=700,
+        **gemini_kwargs,
     )
     article_polish_lm = GoogleModel(
-        model="models/gemini-2.0-flash-thinking-exp-01-21", max_tokens=4000, **gemini_kwargs
+        model="models/gemini-2.0-flash-thinking-exp-01-21",
+        max_tokens=4000,
+        **gemini_kwargs,
     )
 
     lm_configs.set_conv_simulator_lm(conv_simulator_lm)

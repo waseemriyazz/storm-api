@@ -18,11 +18,8 @@ class ErrorResponse(BaseModel):
     message: str
 
 
-
 class ArticleData(BaseModel):
     article: str
-
-
 
 
 class StormData(RootModel[Union[ArticleData, Dict[str, Any]]]):
