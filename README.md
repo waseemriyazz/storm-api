@@ -51,7 +51,7 @@ This project provides a FastAPI wrapper around the Stanford [STORM](https://gith
 
 1.  **Clone the repository:**
     ```bash
-    git clone <your-repo-url>
+    git clone https://github.com/waseemriyazz/storm-api
     cd storm-api
     ```
 
